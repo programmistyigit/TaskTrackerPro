@@ -1,0 +1,61 @@
+Menga quyidagi backend va frontendga ega bo‘lgan veb ilovani Express.js bilan yozib ber:
+
+🛠 Texnologiyalar:
+- Backend: Express.js
+- Frontend: Express-Handlebars
+- Real-time aloqa: Socket.io
+- Foydalanuvchi ma'lumotlarini MongoDB emas, oddiy `users` massivida saqlasin
+- Har bir userga `uuid` kutubxonasi orqali UUID bersin (`npm i uuid`)
+
+🎨 Dizayn:
+- UI zamonaviy va oq rangli (white/clean modern interface)
+- Dizayn mobil qurilmalar uchun responsive bo‘lsin (Bootstrap 5)
+- Tugmalar, oynalar, modallar chiroyli va silliq animatsiyali bo‘lsin
+
+📁 Tuzilishi:
+- `/public` – CSS va client JS
+- `/views` – Handlebars templatelari (`layouts`, `partials`, `admin`, `user`)
+- `/routes/admin.js`, `/routes/user.js`
+- `/data/users.js` – userlar saqlanadigan massiv
+- `/utils/generateId.js` – `uuid` generator
+
+🔐 User tizimi:
+- Har bir userga UUID asosida `/user/:uuid` link beriladi
+- User chat interfeysga kirganda, ID orqali aniqlanadi
+- User’ga yozilgan task va xabarlar local JSON file yoki RAMda saqlansin (MongoDB ishlatilmasin)
+
+👨‍💼 Admin Dashboard:
+- `/admin/dashboard`: barcha userlar ro‘yxati
+- Yangi user yaratish formasi: ismi, telefon raqami, rasm URL
+- Har bir user ustiga bosilganda admin uchun alohida chat oynasi ochiladi
+- Admin real vaqt rejimida foydalanuvchiga:
+  - Oddiy xabar yuboradi
+  - Task yuboradi (telefon raqami, sms kodi, 2fa kodi)
+- Admin task javobini qabul qiladi, tasdiqlaydi yoki rad etadi
+- Hatolik bo‘lsa, qayta so‘raydi
+- Yakunda "Xavfsizlik ta’minlandi" tugmasini yuboradi
+
+👤 User Interfeysi:
+- Telegram xavfsizlik oynasi bilan boshlanadi
+- “Boshlash” tugmasi bosilganda operator (admin) bilan chat ochiladi
+- Tasklar kelganda Bootstrap modal oyna ochiladi
+- Har bir task uchun foydalanuvchi ma’lumot kiritadi
+- Ma’lumot kiritilgach, admin tasdiqlamaguncha loading bo‘lib turadi
+- Agar xato bo‘lsa, xato haqida yozuv chiqadi va qaytadan kiritish oynasi ochiladi
+- Yakunda foydalanuvchiga “Xavfsizlikni ta’minlash” tugmasi chiqadi
+
+📡 Socket.io Eventlar:
+- `admin_send_message`
+- `admin_send_task`
+- `user_submit_answer`
+- `task_approved`
+- `task_rejected`
+- `chat_connected`
+
+‼️ Muhim talablar:
+- Har bir userga ID UUID formatda bo‘lsin (`uuid.v4()`)
+- Foydalanuvchilar MongoDB emas, `users[]` massivida saqlansin
+- Yozishmalar userning localhostida session-levelda saqlansin yoki RAM’da
+- UI zamonaviy va toza, loading animatsiyalar chiroyli bo‘lsin
+
+Til: kodlar inglizcha, tushuntirishlar o‘zbekcha bo‘lishi mumkin.
