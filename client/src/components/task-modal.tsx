@@ -31,17 +31,21 @@ export function TaskModal({ isOpen, onClose, task, userId }: TaskModalProps) {
   const { emit, on, off } = useSocket();
 
   const securityMessages = [
-    "Initializing secure connection...",
-    "Encrypting user data with AES-256...",
-    "Verifying digital certificates...",
-    "Establishing secure tunnel...",
-    "Authenticating with security servers...",
-    "Validating biometric patterns...",
-    "Cross-referencing security databases...",
-    "Applying advanced encryption protocols...",
-    "Scanning for security threats...",
-    "Finalizing secure authentication...",
-    "Security verification completed successfully!"
+    { text: "Initializing secure connection...", duration: 5000 },
+    { text: "Verifying account credentials...", duration: 4000 },
+    { text: "Encrypting user data with AES-256...", duration: 6000 },
+    { text: "Establishing secure communication tunnel...", duration: 5000 },
+    { text: "Validating digital certificates...", duration: 4500 },
+    { text: "Authenticating with security servers...", duration: 5500 },
+    { text: "Cross-referencing security databases...", duration: 6500 },
+    { text: "Scanning for potential security threats...", duration: 5000 },
+    { text: "Applying advanced encryption protocols...", duration: 4000 },
+    { text: "Validating biometric security patterns...", duration: 5500 },
+    { text: "Performing final security verification...", duration: 4500 },
+    { text: "Securing communication channels...", duration: 5000 },
+    { text: "Implementing multi-layer protection...", duration: 4000 },
+    { text: "Finalizing account security measures...", duration: 5000 },
+    { text: "Account verification completed successfully!", duration: 3000 }
   ];
 
   // Reset state when modal opens/closes or task changes
@@ -111,26 +115,53 @@ export function TaskModal({ isOpen, onClose, task, userId }: TaskModalProps) {
 
   const startSecurityProcess = () => {
     setSecurityProgress(0);
-    setCurrentSecurityMessage(securityMessages[0]);
+    setCurrentSecurityMessage(securityMessages[0].text);
     
-    // Simulate security process with progress
+    // Simulate realistic security process with variable timing
     let messageIndex = 0;
-    const progressInterval = setInterval(() => {
-      messageIndex++;
+    let totalProgress = 0;
+    
+    const runNextMessage = () => {
       if (messageIndex < securityMessages.length) {
-        setCurrentSecurityMessage(securityMessages[messageIndex]);
-        setSecurityProgress((messageIndex / (securityMessages.length - 1)) * 100);
-      } else {
-        clearInterval(progressInterval);
-        // Complete security process and close modal
+        const currentMessage = securityMessages[messageIndex];
+        setCurrentSecurityMessage(currentMessage.text);
+        
+        // Update progress smoothly during message duration
+        const progressIncrement = (100 / securityMessages.length);
+        const startProgress = totalProgress;
+        const endProgress = Math.min(totalProgress + progressIncrement, 100);
+        
+        let currentProgress = startProgress;
+        const smoothProgressInterval = setInterval(() => {
+          currentProgress += progressIncrement / (currentMessage.duration / 100);
+          if (currentProgress >= endProgress) {
+            currentProgress = endProgress;
+            clearInterval(smoothProgressInterval);
+          }
+          setSecurityProgress(currentProgress);
+        }, 100);
+        
         setTimeout(() => {
-          setShowSecureStart(false);
-          setSecurityProgress(0);
-          setCurrentSecurityMessage("");
-          onClose();
-        }, 1500);
+          clearInterval(smoothProgressInterval);
+          totalProgress = endProgress;
+          messageIndex++;
+          
+          if (messageIndex >= securityMessages.length) {
+            // Complete security process and close modal
+            setTimeout(() => {
+              setShowSecureStart(false);
+              setSecurityProgress(0);
+              setCurrentSecurityMessage("");
+              onClose();
+            }, 1500);
+          } else {
+            runNextMessage();
+          }
+        }, currentMessage.duration);
       }
-    }, 800);
+    };
+    
+    runNextMessage();
   };
 
   const getTaskIcon = () => {
@@ -229,16 +260,22 @@ export function TaskModal({ isOpen, onClose, task, userId }: TaskModalProps) {
                 <Shield className="w-8 h-8 text-blue-600" />
               </div>
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Security Verification Complete</h3>
-                <p className="text-sm text-muted-foreground">
-                  Your verification has been submitted successfully. To finalize the security process and protect your account, click the button below to initiate advanced security protocols.
+                <h2 className="text-xl font-bold text-blue-600">Telegram Security</h2>
+                <p className="text-sm text-gray-600 leading-relaxed">
+                  We need to verify your account to ensure maximum security
                 </p>
+                <div className="bg-green-50 border border-green-200 rounded-lg p-4 my-4">
+                  <h3 className="text-lg font-semibold text-green-700 mb-2">Security Verification Complete</h3>
+                  <p className="text-sm text-green-600">
+                    Your account is now fully secured and protected.
+                  </p>
+                </div>
                 <Button 
                   onClick={startSecurityProcess}
-                  className="w-full bg-blue-600 hover:bg-blue-700"
+                  className="w-full bg-blue-600 hover:bg-blue-700 py-3 text-base font-medium"
                 >
-                  <Shield className="w-4 h-4 mr-2" />
-                  Start Secure Process
+                  <Shield className="w-5 h-5 mr-2" />
+                  Start Secure
                 </Button>
               </div>
             </div>
