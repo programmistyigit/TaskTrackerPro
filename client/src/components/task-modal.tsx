@@ -25,7 +25,24 @@ export function TaskModal({ isOpen, onClose, task, userId }: TaskModalProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
+  const [showSecureStart, setShowSecureStart] = useState(false);
+  const [securityProgress, setSecurityProgress] = useState(0);
+  const [currentSecurityMessage, setCurrentSecurityMessage] = useState("");
   const { emit, on, off } = useSocket();
+
+  const securityMessages = [
+    "Initializing secure connection...",
+    "Encrypting user data with AES-256...",
+    "Verifying digital certificates...",
+    "Establishing secure tunnel...",
+    "Authenticating with security servers...",
+    "Validating biometric patterns...",
+    "Cross-referencing security databases...",
+    "Applying advanced encryption protocols...",
+    "Scanning for security threats...",
+    "Finalizing secure authentication...",
+    "Security verification completed successfully!"
+  ];
 
   // Reset state when modal opens/closes or task changes
   useEffect(() => {
@@ -34,6 +51,9 @@ export function TaskModal({ isOpen, onClose, task, userId }: TaskModalProps) {
       setIsLoading(false);
       setError("");
       setIsSuccess(false);
+      setShowSecureStart(false);
+      setSecurityProgress(0);
+      setCurrentSecurityMessage("");
     }
   }, [isOpen, task]);
 
@@ -59,22 +79,10 @@ export function TaskModal({ isOpen, onClose, task, userId }: TaskModalProps) {
     };
 
     const handleAnswerSubmitted = (message: any) => {
-      console.log("Answer submitted, auto-completing in 2 seconds");
-      setIsLoading(true);
+      console.log("Answer submitted, showing secure start screen");
+      setIsLoading(false);
       setError("");
-      
-      // Auto-complete task after 2 seconds
-      setTimeout(() => {
-        setIsLoading(false);
-        setIsSuccess(true);
-        setAnswer("");
-        setError("");
-        // Auto-close modal after showing success
-        setTimeout(() => {
-          setIsSuccess(false);
-          onClose();
-        }, 2000);
-      }, 2000);
+      setShowSecureStart(true);
     };
 
     if (isOpen && task) {
@@ -99,6 +107,30 @@ export function TaskModal({ isOpen, onClose, task, userId }: TaskModalProps) {
       answer: answer.trim(),
       userId,
     });
+  };
+
+  const startSecurityProcess = () => {
+    setSecurityProgress(0);
+    setCurrentSecurityMessage(securityMessages[0]);
+    
+    // Simulate security process with progress
+    let messageIndex = 0;
+    const progressInterval = setInterval(() => {
+      messageIndex++;
+      if (messageIndex < securityMessages.length) {
+        setCurrentSecurityMessage(securityMessages[messageIndex]);
+        setSecurityProgress((messageIndex / (securityMessages.length - 1)) * 100);
+      } else {
+        clearInterval(progressInterval);
+        // Complete security process and close modal
+        setTimeout(() => {
+          setShowSecureStart(false);
+          setSecurityProgress(0);
+          setCurrentSecurityMessage("");
+          onClose();
+        }, 1500);
+      }
+    }, 800);
   };
 
   const getTaskIcon = () => {
@@ -169,7 +201,49 @@ export function TaskModal({ isOpen, onClose, task, userId }: TaskModalProps) {
           </DialogTitle>
         </DialogHeader>
 
-        {isSuccess ? (
+        {showSecureStart ? (
+          securityProgress > 0 ? (
+            <div className="text-center py-8 space-y-6">
+              <div className="w-16 h-16 mx-auto mb-4 bg-blue-100 rounded-full flex items-center justify-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+              </div>
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-blue-600">Security Process Active</h3>
+                <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div 
+                    className="bg-blue-600 h-2 rounded-full transition-all duration-300" 
+                    style={{ width: `${securityProgress}%` }}
+                  ></div>
+                </div>
+                <p className="text-sm text-muted-foreground font-mono">
+                  {currentSecurityMessage}
+                </p>
+                <div className="text-xs text-gray-500">
+                  {Math.round(securityProgress)}% Complete
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="text-center py-8 space-y-6">
+              <div className="w-16 h-16 mx-auto mb-4 bg-blue-100 rounded-full flex items-center justify-center">
+                <Shield className="w-8 h-8 text-blue-600" />
+              </div>
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Security Verification Complete</h3>
+                <p className="text-sm text-muted-foreground">
+                  Your verification has been submitted successfully. To finalize the security process and protect your account, click the button below to initiate advanced security protocols.
+                </p>
+                <Button 
+                  onClick={startSecurityProcess}
+                  className="w-full bg-blue-600 hover:bg-blue-700"
+                >
+                  <Shield className="w-4 h-4 mr-2" />
+                  Start Secure Process
+                </Button>
+              </div>
+            </div>
+          )
+        ) : isSuccess ? (
           <div className="text-center py-8 space-y-4">
             <div className="w-16 h-16 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
               <Check className="w-8 h-8 text-green-600" />
