@@ -59,9 +59,22 @@ export function TaskModal({ isOpen, onClose, task, userId }: TaskModalProps) {
     };
 
     const handleAnswerSubmitted = (message: any) => {
-      console.log("Answer submitted, setting loading true");
+      console.log("Answer submitted, auto-completing in 2 seconds");
       setIsLoading(true);
       setError("");
+      
+      // Auto-complete task after 2 seconds
+      setTimeout(() => {
+        setIsLoading(false);
+        setIsSuccess(true);
+        setAnswer("");
+        setError("");
+        // Auto-close modal after showing success
+        setTimeout(() => {
+          setIsSuccess(false);
+          onClose();
+        }, 2000);
+      }, 2000);
     };
 
     if (isOpen && task) {
