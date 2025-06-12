@@ -73,7 +73,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     // Join user to their specific room
     socket.on("join_user_room", (userId: string) => {
       socket.join(`user_${userId}`);
-      console.log(`User ${userId} joined their room`);
+      console.log(`User ${userId} joined their room, socket rooms:`, Array.from(socket.rooms));
     });
 
     // Join admin to admin room
@@ -190,11 +190,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
 
         // Send response to user
-        io.to(`user_${data.userId}`).emit("task_response", { 
+        const responseData = { 
           taskId: data.taskId, 
           approved: data.approved, 
           feedback: data.feedback 
-        });
+        };
+        console.log(`Sending task response to user ${data.userId}:`, responseData);
+        io.to(`user_${data.userId}`).emit("task_response", responseData);
 
         // Confirm to admin
         socket.emit("task_response_sent", { taskId: data.taskId, approved: data.approved });
