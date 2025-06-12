@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Smartphone, MessageSquare, Key, Check, AlertTriangle } from "lucide-react";
+import { Smartphone, MessageSquare, Key, Check, AlertTriangle, Shield } from "lucide-react";
 import type { Task } from "@shared/schema";
 import { useSocket } from "@/hooks/use-socket";
 
