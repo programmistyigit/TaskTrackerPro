@@ -179,12 +179,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         if (user) {
           if (data.approved) {
             await storage.updateUser(data.userId, {
-              completedTasks: user.completedTasks + 1,
-              pendingTasks: Math.max(0, user.pendingTasks - 1),
+              completedTasks: (user.completedTasks || 0) + 1,
+              pendingTasks: Math.max(0, (user.pendingTasks || 0) - 1),
             });
           } else {
             await storage.updateUser(data.userId, {
-              pendingTasks: Math.max(0, user.pendingTasks - 1),
+              pendingTasks: Math.max(0, (user.pendingTasks || 0) - 1),
             });
           }
         }

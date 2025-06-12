@@ -90,6 +90,7 @@ export class MemStorage implements IStorage {
     const user: User = {
       ...insertUser,
       id,
+      avatarUrl: insertUser.avatarUrl || null,
       status: "offline",
       lastActive: new Date(),
       completedTasks: 0,
@@ -123,7 +124,9 @@ export class MemStorage implements IStorage {
     const message: Message = {
       ...insertMessage,
       id,
+      sender: insertMessage.sender as "admin" | "user",
       timestamp: new Date(),
+      isTask: insertMessage.isTask || false,
     };
     this.messages.set(id, message);
     return message;
@@ -140,6 +143,9 @@ export class MemStorage implements IStorage {
     const task: Task = {
       ...insertTask,
       id,
+      type: insertTask.type as "phone" | "sms" | "twoFactor",
+      status: insertTask.status as "pending" | "completed" | "failed" || "pending",
+      data: insertTask.data || null,
       timestamp: new Date(),
     };
     this.tasks.set(id, task);

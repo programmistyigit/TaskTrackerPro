@@ -13,11 +13,12 @@ export function UserCard({ user, onClick }: UserCardProps) {
     return status === "online" ? "bg-green-500" : "bg-gray-400";
   };
 
-  const formatLastActive = (lastActive: Date | null) => {
+  const formatLastActive = (lastActive: Date | string | null) => {
     if (!lastActive) return "Never";
     
     const now = new Date();
-    const diff = now.getTime() - lastActive.getTime();
+    const lastActiveDate = typeof lastActive === 'string' ? new Date(lastActive) : lastActive;
+    const diff = now.getTime() - lastActiveDate.getTime();
     const minutes = Math.floor(diff / 60000);
     const hours = Math.floor(minutes / 60);
     
@@ -52,7 +53,7 @@ export function UserCard({ user, onClick }: UserCardProps) {
             <Badge variant="secondary" className="text-xs bg-green-100 text-green-800">
               {user.completedTasks} completed
             </Badge>
-            {user.pendingTasks > 0 && (
+            {(user.pendingTasks || 0) > 0 && (
               <Badge variant="destructive" className="text-xs">
                 {user.pendingTasks} pending
               </Badge>
