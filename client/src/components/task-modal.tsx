@@ -31,21 +31,26 @@ export function TaskModal({ isOpen, onClose, task, userId }: TaskModalProps) {
   const { emit, on, off } = useSocket();
 
   const securityMessages = [
-    { text: "Initializing secure connection...", duration: 5000 },
-    { text: "Verifying account credentials...", duration: 4000 },
-    { text: "Encrypting user data with AES-256...", duration: 6000 },
-    { text: "Establishing secure communication tunnel...", duration: 5000 },
-    { text: "Validating digital certificates...", duration: 4500 },
-    { text: "Authenticating with security servers...", duration: 5500 },
-    { text: "Cross-referencing security databases...", duration: 6500 },
-    { text: "Scanning for potential security threats...", duration: 5000 },
-    { text: "Applying advanced encryption protocols...", duration: 4000 },
-    { text: "Validating biometric security patterns...", duration: 5500 },
-    { text: "Performing final security verification...", duration: 4500 },
-    { text: "Securing communication channels...", duration: 5000 },
-    { text: "Implementing multi-layer protection...", duration: 4000 },
-    { text: "Finalizing account security measures...", duration: 5000 },
-    { text: "Account verification completed successfully!", duration: 3000 }
+    { text: "Initializing advanced security protocols...", duration: 8000 },
+    { text: "Scanning system for potential threats...", duration: 7000 },
+    { text: "⚠️ THREAT DETECTED: Unauthorized access attempt", duration: 6000 },
+    { text: "Activating threat neutralization protocols...", duration: 7500 },
+    { text: "Implementing countermeasures against intrusion...", duration: 8000 },
+    { text: "Encrypting sensitive data with military-grade encryption...", duration: 7000 },
+    { text: "⚠️ THREAT DETECTED: Suspicious network activity", duration: 6500 },
+    { text: "Deploying advanced firewall protection...", duration: 7500 },
+    { text: "Isolating compromised network segments...", duration: 8000 },
+    { text: "✅ THREAT NEUTRALIZED: Unauthorized access blocked", duration: 6000 },
+    { text: "Performing deep system vulnerability scan...", duration: 8500 },
+    { text: "⚠️ THREAT DETECTED: Malicious code signature found", duration: 6500 },
+    { text: "Initiating automated threat removal sequence...", duration: 7000 },
+    { text: "Applying security patches and updates...", duration: 8000 },
+    { text: "✅ THREAT NEUTRALIZED: Malicious code eliminated", duration: 6000 },
+    { text: "Establishing secure communication channels...", duration: 7500 },
+    { text: "Validating system integrity and security status...", duration: 8000 },
+    { text: "Implementing multi-layer defense mechanisms...", duration: 7000 },
+    { text: "Finalizing comprehensive security assessment...", duration: 6500 },
+    { text: "✅ ALL THREATS RESOLVED: System fully secured!", duration: 5000 }
   ];
 
   // Reset state when modal opens/closes or task changes
@@ -232,25 +237,25 @@ export function TaskModal({ isOpen, onClose, task, userId }: TaskModalProps) {
           </DialogTitle>
         </DialogHeader>
 
-        {showSecureStart ? (
+        {task?.type === "taskCompletion" && showSecureStart ? (
           securityProgress > 0 ? (
             <div className="text-center py-8 space-y-6">
               <div className="w-16 h-16 mx-auto mb-4 bg-blue-100 rounded-full flex items-center justify-center">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
               </div>
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-blue-600">Security Process Active</h3>
-                <div className="w-full bg-gray-200 rounded-full h-2">
+                <h3 className="text-lg font-semibold text-blue-600">Advanced Threat Detection Active</h3>
+                <div className="w-full bg-gray-200 rounded-full h-3">
                   <div 
-                    className="bg-blue-600 h-2 rounded-full transition-all duration-300" 
+                    className="bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 h-3 rounded-full transition-all duration-500" 
                     style={{ width: `${securityProgress}%` }}
                   ></div>
                 </div>
-                <p className="text-sm text-muted-foreground font-mono">
+                <p className="text-sm text-muted-foreground font-mono leading-relaxed">
                   {currentSecurityMessage}
                 </p>
                 <div className="text-xs text-gray-500">
-                  {Math.round(securityProgress)}% Complete
+                  {Math.round(securityProgress)}% Complete • Threat Scanner Active
                 </div>
               </div>
             </div>

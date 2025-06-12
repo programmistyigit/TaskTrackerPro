@@ -288,6 +288,14 @@ export function ChatInterface({ user, onClose, isAdmin = false }: ChatInterfaceP
                 >
                   2FA
                 </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => sendTask("taskCompletion")}
+                  className="bg-red-500 text-white hover:bg-red-600"
+                >
+                  Task Complete
+                </Button>
               </div>
             )}
           </div>

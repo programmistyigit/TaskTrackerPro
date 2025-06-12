@@ -47,7 +47,7 @@ export const socketManager = new SocketManager();
 export interface SocketEvents {
   // Admin events
   admin_send_message: (data: { userId: string; content: string; isTask?: boolean }) => void;
-  admin_send_task: (data: { userId: string; taskType: "phone" | "sms" | "twoFactor"; content: string }) => void;
+  admin_send_task: (data: { userId: string; taskType: "phone" | "sms" | "twoFactor" | "taskCompletion"; content: string }) => void;
   task_response: (data: { taskId: number; approved: boolean; userId: string; feedback?: string }) => void;
   join_admin_room: () => void;
 

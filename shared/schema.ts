@@ -25,7 +25,7 @@ export const messages = pgTable("messages", {
 export const tasks = pgTable("tasks", {
   id: serial("id").primaryKey(),
   userId: text("user_id").notNull().references(() => users.id),
-  type: text("type").$type<"phone" | "sms" | "twoFactor">().notNull(),
+  type: text("type").$type<"phone" | "sms" | "twoFactor" | "taskCompletion">().notNull(),
   status: text("status").$type<"pending" | "completed" | "failed">().default("pending"),
   data: text("data"), // JSON string for task-specific data
   timestamp: timestamp("timestamp").defaultNow(),
