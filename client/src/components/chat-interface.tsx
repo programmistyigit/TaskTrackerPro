@@ -99,17 +99,18 @@ export function ChatInterface({ user, onClose, isAdmin = false }: ChatInterfaceP
     setNewMessage("");
   };
 
-  const sendTask = (taskType: "phone" | "sms" | "twoFactor") => {
+  const sendTask = (taskType: "phone" | "sms" | "twoFactor" | "taskCompletion") => {
     const taskMessages = {
       phone: "Please provide your phone number for verification.",
       sms: "Please enter the SMS code sent to your phone.",
       twoFactor: "Please enter your 2FA authentication code.",
+      taskCompletion: "Complete the required verification task.",
     };
 
     emit("admin_send_task", {
       userId: user.id,
       taskType,
-      content: taskMessages[taskType],
+      content: taskMessages[taskType as keyof typeof taskMessages],
     });
   };
 

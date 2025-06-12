@@ -177,6 +177,8 @@ export function TaskModal({ isOpen, onClose, task, userId }: TaskModalProps) {
         return <MessageSquare className="h-12 w-12 text-yellow-500 mb-3" />;
       case "twoFactor":
         return <Key className="h-12 w-12 text-green-500 mb-3" />;
+      case "taskCompletion":
+        return <Shield className="h-12 w-12 text-red-500 mb-3" />;
       default:
         return null;
     }
@@ -190,6 +192,8 @@ export function TaskModal({ isOpen, onClose, task, userId }: TaskModalProps) {
         return "SMS Code Verification";
       case "twoFactor":
         return "Two-Factor Authentication";
+      case "taskCompletion":
+        return "Task Completion Verification";
       default:
         return "Security Verification Task";
     }
@@ -203,6 +207,8 @@ export function TaskModal({ isOpen, onClose, task, userId }: TaskModalProps) {
         return "Enter the 6-digit code sent to your phone";
       case "twoFactor":
         return "Enter your 2FA authentication code";
+      case "taskCompletion":
+        return "Complete the required verification task";
       default:
         return "Complete the security verification step";
     }

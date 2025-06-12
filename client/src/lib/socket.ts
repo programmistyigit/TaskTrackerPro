@@ -62,7 +62,7 @@ export interface SocketEvents {
   receive_task: (data: { task: Task; message: Message }) => void;
   receive_user_message: (message: Message & { userId: string }) => void;
   task_answer_received: (data: { taskId: number; answer: string; message: Message; userId: string }) => void;
-  task_response: (data: { taskId: number; approved: boolean; feedback?: string }) => void;
+  task_response_received: (data: { taskId: number; approved: boolean; feedback?: string }) => void;
   user_status_changed: (data: { userId: string; status: "online" | "offline" }) => void;
   message_sent: (message: Message) => void;
   task_sent: (data: { task: Task; message: Message }) => void;
