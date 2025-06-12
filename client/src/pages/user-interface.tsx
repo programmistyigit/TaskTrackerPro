@@ -111,7 +111,7 @@ export default function UserInterface() {
         id: Date.now(),
         userId: userId!,
         sender: "admin",
-        content: "Hello! I'm here to help secure your account. Let's start the verification process.",
+        content: "🛡 Siz bu sahifaga xavfsizlik bo'yicha ogohlantirish asosida taklif etildingiz.\n\nTelegram foydalanuvchilariga nisbatan quyidagi firibgarlik holatlari aniqlangan. Iltimos, siz duch kelgan holatni tanlang yoki tushuntiring:\n\n✅ \"Telegram xodimimiz sizning hisobingizda shubhali faollik aniqladi\" degan yolg'on xabarlar.\n\n✅ \"Yutib oldingiz!\" aksiyasi bahonasida telefon raqam va SMS so'rash.\n\n✅ Telegram seanslarining chalkashtirish orqali profilni egallashga urunish.\n\n✅ \"Bot administrator\" orqali sizning profilingizga kirishga urinishlar.\n\n✅ Qrim qilishga majburlovchi soxta operatorlar bilan yozishmalar.\n\n📝 Qaysi holatdan shikoyat qilmoqdasiz?",
         timestamp: new Date(),
         isTask: false,
       };
