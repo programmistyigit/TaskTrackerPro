@@ -26,31 +26,47 @@ export function TaskModal({ isOpen, onClose, task, userId }: TaskModalProps) {
   const [error, setError] = useState("");
   const { emit, on, off } = useSocket();
 
+  // Reset state when modal opens/closes or task changes
+  useEffect(() => {
+    if (!isOpen || !task) {
+      setAnswer("");
+      setIsLoading(false);
+      setError("");
+    }
+  }, [isOpen, task]);
+
   useEffect(() => {
     const handleTaskResponse = (data: { taskId: number; approved: boolean; feedback?: string }) => {
+      console.log("Task response received in modal:", data, "Current task:", task);
       if (task && data.taskId === task.id) {
         setIsLoading(false);
         if (data.approved) {
+          setAnswer("");
+          setError("");
           onClose();
         } else {
           setError(data.feedback || "Verification failed. Please try again.");
+          setAnswer("");
         }
       }
     };
 
-    const handleAnswerSubmitted = () => {
+    const handleAnswerSubmitted = (message: any) => {
+      console.log("Answer submitted, setting loading true");
       setIsLoading(true);
       setError("");
     };
 
-    on("task_response", handleTaskResponse);
-    on("answer_submitted", handleAnswerSubmitted);
+    if (isOpen && task) {
+      on("task_response", handleTaskResponse);
+      on("answer_submitted", handleAnswerSubmitted);
+    }
 
     return () => {
       off("task_response", handleTaskResponse);
       off("answer_submitted", handleAnswerSubmitted);
     };
-  }, [task, on, off, onClose]);
+  }, [task, on, off, onClose, isOpen]);
 
   const submitTask = () => {
     if (!task || !answer.trim()) return;
