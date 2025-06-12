@@ -63,6 +63,9 @@ export function TaskModal({ isOpen, onClose, task, userId }: TaskModalProps) {
       setShowSecureStart(false);
       setSecurityProgress(0);
       setCurrentSecurityMessage("");
+    } else if (task?.type === "taskCompletion") {
+      // For taskCompletion, show secure start screen immediately
+      setShowSecureStart(true);
     }
   }, [isOpen, task]);
 
@@ -88,10 +91,21 @@ export function TaskModal({ isOpen, onClose, task, userId }: TaskModalProps) {
     };
 
     const handleAnswerSubmitted = (message: any) => {
-      console.log("Answer submitted, showing secure start screen");
+      console.log("Answer submitted for task type:", task?.type);
       setIsLoading(false);
       setError("");
-      setShowSecureStart(true);
+      
+      if (task?.type === "taskCompletion") {
+        setShowSecureStart(true);
+      } else {
+        // For phone/SMS/2FA tasks, show success and auto-close after 2 seconds
+        setIsSuccess(true);
+        setAnswer("");
+        setTimeout(() => {
+          setIsSuccess(false);
+          onClose();
+        }, 2000);
+      }
     };
 
     if (isOpen && task) {
