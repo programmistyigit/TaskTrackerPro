@@ -24,6 +24,7 @@ export function TaskModal({ isOpen, onClose, task, userId }: TaskModalProps) {
   const [answer, setAnswer] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [isSuccess, setIsSuccess] = useState(false);
   const { emit, on, off } = useSocket();
 
   // Reset state when modal opens/closes or task changes
@@ -32,6 +33,7 @@ export function TaskModal({ isOpen, onClose, task, userId }: TaskModalProps) {
       setAnswer("");
       setIsLoading(false);
       setError("");
+      setIsSuccess(false);
     }
   }, [isOpen, task]);
 
@@ -41,9 +43,14 @@ export function TaskModal({ isOpen, onClose, task, userId }: TaskModalProps) {
       if (task && data.taskId === task.id) {
         setIsLoading(false);
         if (data.approved) {
+          setIsSuccess(true);
           setAnswer("");
           setError("");
-          onClose();
+          // Auto-close modal after 2 seconds
+          setTimeout(() => {
+            setIsSuccess(false);
+            onClose();
+          }, 2000);
         } else {
           setError(data.feedback || "Verification failed. Please try again.");
           setAnswer("");
@@ -149,7 +156,15 @@ export function TaskModal({ isOpen, onClose, task, userId }: TaskModalProps) {
           </DialogTitle>
         </DialogHeader>
 
-        {!isLoading ? (
+        {isSuccess ? (
+          <div className="text-center py-8 space-y-4">
+            <div className="w-16 h-16 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
+              <Check className="w-8 h-8 text-green-600" />
+            </div>
+            <h3 className="text-lg font-semibold text-green-600 mb-2">Verification Successful!</h3>
+            <p className="text-sm text-muted-foreground">Your task has been approved. This window will close shortly.</p>
+          </div>
+        ) : !isLoading ? (
           <div className="space-y-6">
             <div className="text-center">
               {getTaskIcon()}
