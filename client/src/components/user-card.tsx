@@ -1,6 +1,9 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Copy, ExternalLink } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 import type { User } from "@shared/schema";
 
 interface UserCardProps {
@@ -9,6 +12,8 @@ interface UserCardProps {
 }
 
 export function UserCard({ user, onClick }: UserCardProps) {
+  const { toast } = useToast();
+
   const getStatusColor = (status: string) => {
     return status === "online" ? "bg-green-500" : "bg-gray-400";
   };
@@ -28,6 +33,26 @@ export function UserCard({ user, onClick }: UserCardProps) {
     return `Last seen ${Math.floor(hours / 24)} day${Math.floor(hours / 24) > 1 ? 's' : ''} ago`;
   };
 
+  const getUserLink = () => {
+    return `${window.location.origin}/user/${user.id}`;
+  };
+
+  const copyUserLink = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const link = getUserLink();
+    navigator.clipboard.writeText(link);
+    toast({
+      title: "Link copied!",
+      description: "User link has been copied to clipboard",
+    });
+  };
+
+  const openUserLink = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const link = getUserLink();
+    window.open(link, '_blank');
+  };
+
   return (
     <Card 
       className="cursor-pointer transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-primary"
@@ -45,7 +70,7 @@ export function UserCard({ user, onClick }: UserCardProps) {
           </div>
           <div className={`w-3 h-3 rounded-full ${getStatusColor(user.status || "offline")}`} />
         </div>
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center mb-3">
           <small className="text-muted-foreground text-xs">
             {formatLastActive(user.lastActive)}
           </small>
@@ -59,6 +84,27 @@ export function UserCard({ user, onClick }: UserCardProps) {
               </Badge>
             )}
           </div>
+        </div>
+        
+        <div className="flex gap-2 pt-2 border-t">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={copyUserLink}
+            className="flex-1 text-xs"
+          >
+            <Copy className="h-3 w-3 mr-1" />
+            Copy Link
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={openUserLink}
+            className="flex-1 text-xs"
+          >
+            <ExternalLink className="h-3 w-3 mr-1" />
+            Open
+          </Button>
         </div>
       </CardContent>
     </Card>
