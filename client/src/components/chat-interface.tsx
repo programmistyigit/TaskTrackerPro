@@ -18,6 +18,7 @@ export function ChatInterface({ user, onClose, isAdmin = false }: ChatInterfaceP
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [pendingTasks, setPendingTasks] = useState<{[key: number]: {taskId: number, answer: string, userId: string}}>({});
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { emit, on, off } = useSocket();
 
@@ -53,14 +54,26 @@ export function ChatInterface({ user, onClose, isAdmin = false }: ChatInterfaceP
       }
     };
 
+    const handleTaskAnswerReceived = (data: { taskId: number; answer: string; message: Message; userId: string }) => {
+      if (data.userId === user.id) {
+        setMessages(prev => [...prev, data.message]);
+        setPendingTasks(prev => ({
+          ...prev,
+          [data.taskId]: data
+        }));
+      }
+    };
+
     on("receive_message", handleReceiveMessage);
     on("receive_user_message", handleReceiveUserMessage);
     on("message_sent", handleMessageSent);
+    on("task_answer_received", handleTaskAnswerReceived);
 
     return () => {
       off("receive_message", handleReceiveMessage);
       off("receive_user_message", handleReceiveUserMessage);
       off("message_sent", handleMessageSent);
+      off("task_answer_received", handleTaskAnswerReceived);
     };
   }, [user.id, on, off]);
 
@@ -97,6 +110,35 @@ export function ChatInterface({ user, onClose, isAdmin = false }: ChatInterfaceP
       userId: user.id,
       taskType,
       content: taskMessages[taskType],
+    });
+  };
+
+  const approveTask = (taskId: number) => {
+    emit("task_response", {
+      taskId,
+      approved: true,
+      userId: user.id,
+    });
+    
+    setPendingTasks(prev => {
+      const newPending = { ...prev };
+      delete newPending[taskId];
+      return newPending;
+    });
+  };
+
+  const rejectTask = (taskId: number, feedback?: string) => {
+    emit("task_response", {
+      taskId,
+      approved: false,
+      userId: user.id,
+      feedback: feedback || "Please try again with correct information.",
+    });
+    
+    setPendingTasks(prev => {
+      const newPending = { ...prev };
+      delete newPending[taskId];
+      return newPending;
     });
   };
 
@@ -169,6 +211,42 @@ export function ChatInterface({ user, onClose, isAdmin = false }: ChatInterfaceP
               </div>
             </div>
           ))}
+          
+          {/* Pending Task Responses for Admin */}
+          {isAdmin && Object.values(pendingTasks).map((taskData) => (
+            <div key={taskData.taskId} className="bg-yellow-50 border-2 border-yellow-200 rounded-lg p-4 animate-in slide-in-from-bottom-2 duration-300">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <Badge className="bg-yellow-500 text-black">TASK RESPONSE</Badge>
+                  <span className="text-sm font-medium">Task #{taskData.taskId}</span>
+                </div>
+              </div>
+              
+              <div className="bg-white rounded p-3 mb-3">
+                <p className="text-sm text-gray-600 mb-1">User's Answer:</p>
+                <p className="font-medium">{taskData.answer}</p>
+              </div>
+              
+              <div className="flex gap-2">
+                <Button
+                  onClick={() => approveTask(taskData.taskId)}
+                  size="sm"
+                  className="flex-1 bg-green-600 hover:bg-green-700"
+                >
+                  ✓ Approve
+                </Button>
+                <Button
+                  onClick={() => rejectTask(taskData.taskId)}
+                  variant="destructive"
+                  size="sm"
+                  className="flex-1"
+                >
+                  ✗ Reject
+                </Button>
+              </div>
+            </div>
+          ))}
+          
           <div ref={messagesEndRef} />
         </div>
         
